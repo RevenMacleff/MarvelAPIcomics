@@ -4,36 +4,36 @@ import { useEffect, useState } from "react";
 import MarvelService from "../services/MarvelServices";
 
 const RandomChar = () => {
-  let [name, setName] = useState(null);
-  let [descr, setDescr] = useState(null);
+  /*   let [name, setName] = useState(null);
+  let [description, setDescr] = useState(null);
   let [thumbnail, setThumbnail] = useState(null);
   let [homepage, setHomepage] = useState(null);
-  let [wiki, setWiki] = useState(null);
+  let [wiki, setWiki] = useState(null); */
+  let [char, setChar] = useState({});
+  const marvelService = new MarvelService();
+  const onCharLoaded = (res) => {
+    /*     setName(res.data.results[0].name);
+    setDescr(res.data.results[0].descr);
+    setThumbnail(
+      res.data.results[0].thumbnail.path +
+        "." +
+        res.data.results[0].thumbnail.extension
+    );
+    setHomepage(res.data.results[0].urls[0].url);
 
-  /*   const update = useCallback(updateChar); */
+    setWiki(res.data.results[0].urls[1].url); */
+    setChar(res);
+  };
   useEffect(() => {
-    const marvelService = new MarvelService();
     const updateChar = () => {
-      const id = Math.floor(
-        Math.random() * (1011400 - 1011000) + 1011000
-      ); /* результат максимального значения, минус минимальное */
-      marvelService.getCharacter(id).then((res) => {
-        setName(res.data.results[0].name);
-        setDescr(res.data.results[0].descr);
-        setThumbnail(
-          res.data.results[0].thumbnail.path +
-            "." +
-            res.data.results[0].thumbnail.extension
-        );
-        setHomepage(res.data.results[0].urls[0].url);
-        setWiki(res.data.results[0].urls[1].url);
-      });
+      const id = Math.floor(Math.random() * (1011400 - 1011000)) + 1011000;
+      marvelService.getCharacter(id).then(onCharLoaded);
     };
     const elems = updateChar();
+
     return () => elems;
   }, []);
-
-  /*   marvelService.getCharacter(1011052).then((res) => console.log(res)); */
+  const { name, description, thumbnail, homepage, wiki } = char;
 
   return (
     <div className="randomchar">
@@ -45,7 +45,7 @@ const RandomChar = () => {
         />
         <div className="randomchar__info">
           <p className="randomchar__name">{name}</p>
-          <p className="randomchar__descr">{descr}</p>
+          <p className="randomchar__descr">{description}</p>
           <div className="randomchar__btns">
             <a href={homepage} className="button button__main">
               <div className="inner">homepage</div>
