@@ -3,7 +3,7 @@ import "./charList.scss";
 import { useEffect, useState } from "react";
 import MarvelService from "../services/MarvelServices";
 
-const CharList = () => {
+const CharList = ({ onCharSelected }) => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -27,12 +27,14 @@ const CharList = () => {
       imgStyle = { objectFit: "unset" };
     }
     return (
-      <li className="char__item" key={item.id}>
-        <a href={item.wiki}>
-          {" "}
-          <img src={item.thumbnail} alt={item.name} style={imgStyle} />
-          <div className="char__name">{item.name}</div>
-        </a>
+      <li
+        className="char__item"
+        key={item.id}
+        onClick={() => onCharSelected(item.id)}
+      >
+        {" "}
+        <img src={item.thumbnail} alt={item.name} style={imgStyle} />
+        <div className="char__name">{item.name}</div>
       </li>
     );
   });

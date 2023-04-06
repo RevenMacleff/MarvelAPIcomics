@@ -18,8 +18,12 @@ const RandomChar = () => {
     setLoading(false);
     setError(true);
   };
+  const onCharLoading = () => {
+    setLoading(true);
+  };
   const updateChar = () => {
     const id = Math.floor(Math.random() * (1011400 - 1011000)) + 1011000;
+    onCharLoading();
     marvelService.getCharacter(id).then(onCharLoaded).catch(onError);
     /*     console.log(id); */
   };
