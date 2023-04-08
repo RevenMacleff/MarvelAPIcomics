@@ -20,6 +20,7 @@ const CharInfo = ({ charId }) => {
     }
     onCharLoading();
     marvelService.getCharacter(charId).then(onCharLoaded).catch(onError);
+    /* this.foo.bar = 0; */
   };
 
   const onError = () => {

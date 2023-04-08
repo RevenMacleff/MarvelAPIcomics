@@ -5,18 +5,32 @@ import MarvelService from "../services/MarvelServices";
 
 const CharList = ({ onCharSelected }) => {
   const [items, setItems] = useState([]);
+  const [newItemLoading, setNewItemLoading] = useState(false);
+  const [offset, setOffset] = useState(210);
+  const [charEnded, setCharEnded] = useState(false);
 
+  const marvelService = new MarvelService();
   useEffect(() => {
-    const marvelService = new MarvelService();
-
-    const onCharsLoaded = (res) => {
-      setItems(res);
-    };
-    const getAll = () => {
-      marvelService.getAllCharacters().then(onCharsLoaded);
-    };
-    getAll();
+    onRequest();
   }, []);
+  const onCharsLoaded = (newItems) => {
+    let ended = false;
+    if (newItems.length < 9) {
+      ended = true;
+    }
+    setItems((items) => [...items, ...newItems]);
+    setNewItemLoading(false);
+    setOffset((offset) => offset + 6);
+    setCharEnded((charEnded) => ended);
+  };
+  const onRequest = (offset) => {
+    onCharListLoading();
+    marvelService.getAllCharacters(offset).then(onCharsLoaded);
+  };
+
+  const onCharListLoading = () => {
+    setNewItemLoading(true);
+  };
 
   const elements = items.map((item) => {
     let imgStyle = { objectFit: "cover" };
@@ -42,7 +56,11 @@ const CharList = ({ onCharSelected }) => {
   return (
     <div className="char__list">
       <ul className="char__grid">{elements}</ul>
-      <button className="button button__main button__long">
+      <button
+        className="button button__main button__long"
+        disabled={newItemLoading}
+        onClick={() => onRequest(offset)}
+      >
         <div className="inner">load more</div>
       </button>
     </div>
