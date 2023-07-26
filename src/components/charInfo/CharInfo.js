@@ -1,44 +1,34 @@
 import "./charInfo.scss";
-import MarvelService from "../services/MarvelServices";
+
 import { useEffect, useState } from "react";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import Skeleton from "../skeleton/Skeleton";
+import useMarvelService from "../services/MarvelServices";
 
 const CharInfo = ({ charId }) => {
   let [char, setChar] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const marvelService = new MarvelService();
+
+  const { getCharacter, loading, error, clearError } = useMarvelService();
   const onCharLoaded = (res) => {
     setChar(res);
-    setLoading(false);
   };
   const updateChar = () => {
     if (!charId) {
       return;
     }
-    onCharLoading();
-    marvelService.getCharacter(charId).then(onCharLoaded).catch(onError);
+    clearError();
+    getCharacter(charId).then(onCharLoaded);
     /* this.foo.bar = 0; */
   };
 
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
-  const onCharLoading = () => {
-    setLoading(true);
-  };
   useEffect(() => {
     updateChar();
   }, [charId]);
   const skeleton = char || loading || error ? null : <Skeleton></Skeleton>;
   const Error = error ? <ErrorMessage></ErrorMessage> : null;
   const spinner = loading ? <Spinner></Spinner> : null;
-  const content = !(loading || error || !char) ? (
-    <View char={char}></View>
-  ) : null;
+  const content = !(loading || error || !char) ? <View char={char}></View> : null;
 
   return (
     <div className="char__info">
@@ -53,10 +43,7 @@ const CharInfo = ({ charId }) => {
 const View = ({ char }) => {
   const { name, description, thumbnail, homepage, wiki, comics } = char;
   let imgStyle = { objectFit: "cover" };
-  if (
-    thumbnail ===
-    "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
-  ) {
+  if (thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg") {
     imgStyle = { objectFit: "contain" };
   }
   return (
